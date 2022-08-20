@@ -1,0 +1,112 @@
+#!/bin/bash
+################################## !!! README !!! #######################################
+#                                                                                       #
+# Script name: channel_installer                                                        #
+# Tested on Ubuntu 20.04 - Ubuntu 22.04 - Mint 20.3                                     #
+# chmod the script                                                                      #
+# then load it simply typing: sudo ./channel_installer                                  #
+#                                                                                       #
+#########################################################################################
+#
+clear
+SRC='/usr/local/src'
+Remind3='is already installed'
+#
+apt-get -y install libcurl4-openssl-dev git libpugixml-dev ca-certificates
+#
+clear
+echo "               *** Install W_scan_cpp ***"
+sleep 1
+cd $SRC
+if [ -d /usr/local/src/librepfunc ]
+	then echo "librepfunc $Remind3"; sleep 1
+		else git clone https://github.com/wirbel-at-vdr-portal/librepfunc.git
+        cd librepfunc
+		make -j8
+		make install
+        fi
+cd $SRC        
+if [ -f /usr/local/bin/w_scan_cpp ]
+    then echo "W_scan_cpp $Remind3"; sleep 1
+        else wget https://www.gen2vdr.de/wirbel/w_scan_cpp/w_scan_cpp-20220105.tar.bz2
+        tar xjf w_scan_cpp-20220105.tar.bz2
+        mv -f w_scan_cpp-20220105 w_scan_cpp
+        cd w_scan_cpp
+        make download
+        make
+        make install
+        rm -rf w_scan_cpp-20220105.tar.bz2
+fi
+#
+echo "               *** Install W_scan2 ***"
+sleep 1
+cd $SRC
+if [ -f /$SRC/w_scan2/Makefile ]
+  then  echo "W_scan2 $Remind3"; sleep 1
+else git clone https://github.com/stefantalpalaru/w_scan2
+cp w_scan2 /home/`logname`/Vdrrepo/
+cd w_scan2
+./autogen.sh
+./configure
+make && make install
+fi
+#
+clear
+    dialog --title "   ** Install && Upgrade Settings **   " --infobox "
+   --------------------------------------------------------------
+                     Setup channell list
+   --------------------------------------------------------------
+
+
+        ****   Sezione W_scan_cpp/t2scan  ****
+
+        [a]    Install Settings Turksat - 42°E
+        [b]    Install Settings Astra 4 - 4.8°E   # no
+        [c]    Install Settings Eutelsat 9 - 9.0°E
+        [d]    Install Settings Hotbird - 13.0°E
+        [e]    Install Settings Astra 19 - 19.2°E
+        [f]    Install Settings Astra 23.5 - 23.5°E
+        [g]    Install Settings Astra 28 - 28.2°E   #?
+        [h]    Install Settings Thor 0.8°W
+        [i]    Install Settings Eutelsat 5 - 5°W    #no
+        [l]    Install Settings Hispasat - 30°W
+        [m]    Install Terrestrial Settings (Italy)
+        
+        ****   Sezione Dual Feed  (13.0°E - 19.2°E)  ****
+        
+        [p]    Install Settings Hotbird - 13.0°E
+        [q]    Install Settings Astra 19 - 19.2°E
+
+        ****   Sezione Trial Feed  (9.0°E - 13.0°E - 13.0°E)  **** 
+
+        [r]    Install Settings Eutelsat 9 - 9.0°E
+        [s]    Install Settings Hotbird - 13.0°E
+        [t]    Install Settings Astra 19 - 19.2°E
+
+        [z]    Skip
+
+   -------------------------------------------------------------- " 0 0
+echo -n "        Enter your menu choice  [a-z]:      "
+read yourch
+case $yourch in
+
+a) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Turksat.conf; w_scan_cpp -fs -s S42E0 >> /etc/vdr/channels-w_scan_cpp-Turksat.conf;;
+# b) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_4.conf; w_scan_cpp -fs -s S4E8 >> /etc/vdr/channels-w_scan_cpp-Astra_4.conf;;
+c) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf; w_scan_cpp -fs -s S9E0 >> /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf;;
+d) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Hotbird.conf; w_scan_cpp -fs -s S13E0 >> /etc/vdr/channels-w_scan_cpp-Hotbird.conf;;
+e) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_19.conf; w_scan_cpp -fs -s S19E2 >> /etc/vdr/channels-w_scan_cpp-Astra_19.conf;;
+f) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_23.conf; w_scan_cpp -fs -s S23E5 >> /etc/vdr/channels-w_scan_cpp-Astra_23.conf;;
+# g) clear; clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_28.conf; w_scan_cpp -fs -s S28E2 >> /etc/vdr/channels-w_scan_cpp-Astra_28.conf;;
+h) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Thor.conf; w_scan_cpp -fs -s S0W8 >> /etc/vdr/channels-w_scan_cpp-Thor.conf;;
+# i) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Eutelsat_5.conf; w_scan_cpp -fs -s S5W0 >> /etc/vdr/channels-w_scan2-Eutelsat_5.conf;;
+l) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Hispasat.conf; w_scan_cpp -fs -s S30W0 >> /etc/vdr/channels-w_scan_cpp-Hispasat.conf;;
+m) clear; rm -rf /etc/vdr/channels-dtt.conf; w_scan2 -ft -c IT >> /etc/vdr/channels-dtt.conf;;
+p) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Hotbird.conf; w_scan_cpp -fs -D 0c -s S13E0 >> /etc/vdr/channels-w_scan_cpp-Hotbird.conf;;
+q) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_19.conf; w_scan_cpp -fs -D 1c -s S19E2 >> /etc/vdr/channels-w_scan_cpp-Astra_19.conf;;
+r) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf; w_scan_cpp -D 0c -fs -s S9E0 >> /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf;;
+s) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Hotbird.conf; w_scan_cpp -fs -D 1c -s S13E0 >> /etc/vdr/channels-w_scan_cpp-Hotbird.conf;;
+t) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_19.conf; w_scan_cpp -fs -D 2c -s S19E2 >> /etc/vdr/channels-w_scan_cpp-Astra_19.conf;;
+
+z) ;;
+#
+esac
