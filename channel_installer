@@ -12,7 +12,7 @@ clear
 SRC='/usr/local/src'
 Remind3='is already installed'
 #
-apt-get -y install libcurl4-openssl-dev git libpugixml-dev ca-certificates
+apt-get -y install libcurl4-openssl-dev git libpugixml-dev ca-certificates libpugixml-dev
 #
 clear
 echo "               *** Install W_scan_cpp ***"
@@ -28,14 +28,15 @@ if [ -d /usr/local/src/librepfunc ]
 cd $SRC        
 if [ -f /usr/local/bin/w_scan_cpp ]
     then echo "W_scan_cpp $Remind3"; sleep 1
-        else wget https://www.gen2vdr.de/wirbel/w_scan_cpp/w_scan_cpp-20220105.tar.bz2
-        tar xjf w_scan_cpp-20220105.tar.bz2
-        mv -f w_scan_cpp-20220105 w_scan_cpp
+        else wget https://www.gen2vdr.de/wirbel/w_scan_cpp/w_scan_cpp-20230121.tar.bz2
+        tar xjf w_scan_cpp-20230121.tar.bz2
+        rm -rf w_scan_cpp-20230121.tar.bz2
+        mv -f w_scan_cpp-20230121 w_scan_cpp
         cd w_scan_cpp
         make download
         make
         make install
-        rm -rf w_scan_cpp-20220105.tar.bz2
+        
 fi
 #
 echo "               *** Install W_scan2 ***"
@@ -52,6 +53,9 @@ make && make install
 fi
 #
 clear
+while :
+do 
+
     dialog --title "   ** Install && Upgrade Settings **   " --infobox "
    --------------------------------------------------------------
                      Setup channell list
@@ -83,7 +87,7 @@ clear
         [s]    Install Settings Hotbird - 13.0°E
         [t]    Install Settings Astra 19 - 19.2°E
 
-        [z]    Skip
+        [z]    Exit
 
    -------------------------------------------------------------- " 0 0
 echo -n "        Enter your menu choice  [a-z]:      "
@@ -106,7 +110,10 @@ q) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_19.conf; w_scan_cpp -fs -D 1
 r) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf; w_scan_cpp -D 0c -fs -s S9E0 >> /etc/vdr/channels-w_scan_cpp-Eutelsat_9.conf;;
 s) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Hotbird.conf; w_scan_cpp -fs -D 1c -s S13E0 >> /etc/vdr/channels-w_scan_cpp-Hotbird.conf;;
 t) clear; rm -rf /etc/vdr/channels-w_scan_cpp-Astra_19.conf; w_scan_cpp -fs -D 2c -s S19E2 >> /etc/vdr/channels-w_scan_cpp-Astra_19.conf;;
-
-z) ;;
-#
+z)
+clear
+exit 0
+;;
+*) ;;
 esac
+done
