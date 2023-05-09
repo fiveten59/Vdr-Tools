@@ -43,7 +43,7 @@ ALLOWED="#
 #
 # If your network setup is diiferent change it and
 # Save it with CTRL+O and exit with CTRL+X "
-##################
+#
 
                                           ###############################################
                                           #              Install Vdr Plugins            #
@@ -127,7 +127,7 @@ case $yourch in
         *****  Install  *****  .................................................  *****  Remove  *****
 
         [a]    Softhddevice ...............................  [a1]    Softhddevice
-        [b]    Softhdcuvid ................................  [b1]    Softhdcuvid
+        [b]    Softhdcuvid / Softhdvaapi ..................  [b1]    Softhdcuvid / Softhdvaapi
         [c]    Xineliboutput ..............................  [c1]    Xineliboutput
         [d]    Softhddevice-drm ...........................  [d1]    Softhddevice-drm
         [e]    Rpihddevice (Raspberry Pi3).................  [e1]    Rpihddevice (Raspberry Pi3)
@@ -157,7 +157,7 @@ if [ -f softhddevice/Makefile ]
     		 cp -rf /$VDRSRC/vdr-plugin-softhddevice /home/`logname`/Vdrrepo/
     		 mv vdr-plugin-softhddevice softhddevice
     		 cd softhddevice
-    		 nano Makefile
+#    		 nano Makefile
     		 make && make install
 
      			dialog --title "   ** Setup Softhddevice **   " --infobox "
@@ -173,7 +173,7 @@ if [ -f softhddevice/Makefile ]
     read yourch
     case $yourch in
 #
-a) sed -i "s|-P'dvbapi'|& -P'softhddevice -f'|" /usr/local/bin/vdrrun;;
+a) sed -i "s|-P'dvbapi'|& -P'softhddevice -v cuvid -f'|" /usr/local/bin/vdrrun;;
 b) sed -i "s|-P'dvbapi'|& -P'softhddevice -v cpu-glx -d :0.0 -f'|" /usr/local/bin/vdrrun;;
 esac
 #
@@ -196,15 +196,13 @@ sleep 2
 cd $VDRSRC
 if [ -f softhddevice/Makefile ]
 echo "$Remind1 Softhddevice"
-sleep 2;
+sleep 2
 	then rm -rf softhddevice
 	cd $LIB
 	rm -rf libvdr-softhddevice.*
-	sed -i "s|-P'softhddevice -f'||" /usr/local/bin/vdrrun
-	sed -i "s|-P'softhddevice -f -v va-api'||" /usr/local/bin/vdrrun
+	sed -i "s|-P'softhddevice -v cuvid -f'||" /usr/local/bin/vdrrun
+	sed -i "s|-P'softhddevice -v cpu-glx -d :0.0 -f'||" /usr/local/bin/vdrrun
 		else echo "Softhddevice $Remind5"
-		sed -i "s|-P'softhddevice -f'||" /usr/local/bin/vdrrun
-		sed -i "s|-P'softhddevice -v cpu-glx -d :0.0 -f'||" /usr/local/bin/vdrrun
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -215,7 +213,7 @@ make plugins install
 ###########################################################################################################
 b)
 clear
-echo "        ***                Installing Vdr-Plugin-Softhdcuvid               ***"; sleep 2
+echo "        ***       Installing Vdr-Plugin-Softhdcuvid / Softhdvaapi       ***"; sleep 2
 
 apt-get -y install libx11-xcb-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-randr0-dev
 apt-get -y install libxcb-screensaver0-dev libxcb-xv0-dev libxcb-image0-dev libxcb-util0-dev
@@ -233,13 +231,13 @@ then echo "Softhdcuvid $Remind5"
 else git clone https://github.com/jojo61/vdr-plugin-softhdcuvid.git
 cp -rf /$VDRSRC/vdr-plugin-softhdcuvid /home/`logname`/Vdrrepo/
  
-     			dialog --title "   ** Setup Softhddevice **   " --infobox "
+     			dialog --title "   ** Setup Softhdcuvid / Softhdvaapi  **   " --infobox "
    			-------------------------------------------------------------------------
   			-------------------------------------------------------------------------
 
                                                Nvidia Video Devices
-		        [a]    Nvidia Video Devices                 
-		        [b]    Intel Video Devices                  
+		        [a]    Nvidia Video Devices (Softhdcuvid)
+		        [b]    Intel Video Devices (Softhdvaapi)                  
 
 			------------------------------------------------------------------------- " 0 0
 
@@ -256,8 +254,8 @@ make plugins install
 ;;    		
 #
 b) 
-mv -f vdr-plugin-softhdcuvid softhdcuvid
-cd softhdcuvid
+mv -f vdr-plugin-softhdcuvid softhdvaapi
+cd softhdvaapi
 rm -rf Makefile
 wget https://www.dropbox.com/s/0sc1ihx8wns0717/patch_softhdcuvid_vaapi.tar.gz
 tar -zxvf patch_softhdcuvid_vaapi.tar.gz
@@ -275,18 +273,21 @@ cd /home/`logname`/Vdrrepo/; chmod -R 777 *;
 #                                      $$$$$$$$$$$$$$$$$$
 b1)
 clear
-echo "        ***                Removing Vdr-Plugin-Softhdcuvid             ***"
+echo "        ***                Removing Vdr-Plugin-Softhdcuvid / Softhdvaapi             ***"
 sleep 2
 cd $VDRSRC
 if [ -f softhdcuvid/Makefile ]
+echo "$Remind1 Softhdcuvid"
+sleep 2
    		then rm -rf softhdcuvid
+   		then rm -rf softhdvaapi
    		cd $LIB
    		rm -rf libvdr-softhdcuvid.*
+   		then rm -rf libvdr-softhdvaapi.*
+   		
    		sed -i "s|-P'softhdcuvid -f'||" /usr/local/bin/vdrrun
    		sed -i "s|-P'softhdvaapi -d :0.0 -f'||" /usr/local/bin/vdrrun
-   			else echo "Softhddevice $Remind5"
-   			sed -i "s|-P'softhdcuvid -f'||" /usr/local/bin/vdrrun
-   			sed -i "s|-P'softhdvaapi -d :0.0 -f'||" /usr/local/bin/vdrrun
+   			else echo "Softhdcuvid  $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -362,6 +363,8 @@ clear
 echo "        ***                Removing Vdr-Plugin-Xineliboutput               ***"; sleep 2
 cd $VDRSRC
 if [ -f xineliboutput/Makefile ]
+echo "$Remind1 Xineliboutput"
+sleep 2
 	then rm -rf xineliboutput
 	cd $LIB
 	rm -rf libvdr-xineliboutput.*
@@ -372,7 +375,7 @@ if [ -f xineliboutput/Makefile ]
 	rm -rf /home/`logname`/Scrivania/Xinelib.desktop
 	rm -rf /usr/share/applications/Xinelib.desktop
 	rm -rf /usr/local/bin/start-xinelib-vdr.sh
-		else echo "VDR-Plugin-Xineliboutput $Remind5"; sed -i "s|-P'xineliboutput --local=sxfe --fullscreen --video=vdpau --hud --audio=alsa --remote=none --post=tvtime:method=Linear,cheap_mode=1,pulldown=0,use_progressive_frame_flag=1'||" /usr/local/bin/vdrrun
+		else echo "VDR-Plugin-Xineliboutput $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -382,7 +385,7 @@ make plugins install
 #
 d)
 clear
-echo "        ***                Installing Sothddevice-drm-gles              ***"; sleep 2
+echo "        ***                Installing Sothddevice-drm            ***"; sleep 2
 cd $VDRSRC
 if [ -f softhddevice-drm/Makefile ]
 	then echo "Sothddevice-drm $Remind5"
@@ -403,13 +406,15 @@ clear
 echo "        ***                Removing Sothddevice-drm              ***"; sleep 2
 cd $VDRSRC
 if [ -f  softhddevice-drm/Makefile ]
+echo "$Remind1 Sothddevice-drm"
+sleep 2
 	then rm -rf softhddevice-gles
 	cd $LIB
 	rm -rf libvdr-softhddevice-drm.*
 	rm -rf /home/`logname`/Vdrrepo/softhddevice-drm
 	sed -i "s|-P'softhddevice-drm'||" /usr/local/bin/vdrrun
 	echo "Sothddevice-drm $Remind1"
-		else echo "Sothddevice-drm $Remind5"; sed -i "s|-P'sothddevice-drm'||" /usr/local/bin/vdrrun
+		else echo "Sothddevice-drm $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -440,7 +445,7 @@ cd userland
 fi
 #
 cd $VDRSRC
-if [ -f rpihddevice-drm/Makefile ]
+if [ -f rpihddevice/Makefile ]
 	then echo "Rpihddevice $Remind5"
 		else git clone https://github.com/vdr-projects/vdr-plugin-rpihddevice.git
 		cp -rf vdr-plugin-rpihddevice /home/`logname`/Vdrrepo/
@@ -454,21 +459,20 @@ chmod -R 777 *
 cd $SRC/vdr
 make plugins install
 #
-
-
-
         echo "     Press Enter to continue ...               "; read enterKey;;
 #
 e1)
 clear
 echo "        ***                Removing Rpihddevice               ***"; sleep 2
+cd $VDRSRC
 if [ -f rpihddevice/Makefile ]
+echo "$Remind1 Rpihddevice"
+sleep 2
 	then rm -rf rpihddevice
 	cd $LIB
 	rm -rf libvdr-rpihddevice.*
-	sed -i "s|-P'rpihddevice'||" /usr/local/bin/vdrrun
-	echo "Rpihddevice $Remind1"
-		else echo "Rpihddevice $Remind5"; sed -i "s|-P'rpihddevice'||" /usr/local/bin/vdrrun
+	sed -i "s|-P'rpihddevice -o 5'||" /usr/local/bin/vdrrun
+		else echo "Rpihddevice $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -536,12 +540,13 @@ clear
 echo "        ***                Removing SkinNopacity              ***"; sleep 2
 cd $VDRSRC
 if [ -f SkinNopacity/Makefile ]
+echo "$Remind1 SkinNopacity"
+sleep 2
 	then rm -rf SkinNopacity
 	cd $LIB
 	rm -rf libvdr-skinnopacity.*
 	sed -i "s|-P'skinnopacity -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
-	echo "Skin-Nopacity $Remind1"
-		else echo "Skin-Nopacity $Remind5"; sed -i "s|-P'skinnopacity -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
+		else echo "Skin-Nopacity $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -581,6 +586,8 @@ clear
 echo "        ***                Removing Skindesigner               ***"; sleep 2
 cd $VDRSRC
 if [ -f skindesigner/Makefile ]
+echo "Vdr-Plugin-Skindesigner $Remind1"
+sleep 2
 	then rm -rf skindesigner
   	cd $LIB
   	rm -rf libvdr-skindesigner.*
@@ -588,9 +595,8 @@ if [ -f skindesigner/Makefile ]
   	rm -rf skindesigner
   	cd /$PLUGINS
   	rm -rf skindesigner
-  	sed -i "s|-P'skindesigner -l /etc/vdr/logos/ -i /etc/vdr/plugins/skindesigner/skins/'||" /usr/local/bin/vdrrun; 	echo "Vdr-Plugin-Skindesigner $Remind1"
+  	sed -i "s|-P'skindesigner -l /etc/vdr/logos/ -i /etc/vdr/plugins/skindesigner/skins/'||" /usr/local/bin/vdrrun
 		else echo "Skindesigner $Remind5"
-		sed -i "s|-P'skindesigner -l /etc/vdr/logos/ -i /etc/vdr/plugins/skindesigner/skins/'||" /usr/local/bin/vdrrun
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -622,12 +628,13 @@ clear
 echo "        ***                Removing SkinLCARSNG               ***"; sleep 2
 cd $VDRSRC
 if [ -f skinlcarsng/Makefile ]
+echo "Vdr-Plugin-SkinLCARSNG $Remind1"
+sleep 2
 	then rm -rf skinlcarsng
 	cd $LIB
 	rm -rf libvdr-skinlcarsng.*
 	sed -i "s|-P'skinlcarsng'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-SkinLCARSNG $Remind1"
-		else echo "SkinLCARSNG $Remind5"; sed -i "s|-P'skinlcarsng'||" /usr/local/bin/vdrrun 
+		else echo "SkinLCARSNG $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -669,14 +676,15 @@ clear
 echo "        ***                Removing Vdr-Plugin-Osd2web               ***"; sleep 2
 cd $VDRSRC
 if [ -f osd2web/Makefile ]
+echo "Vdr-Plugin-Osd2web $Remind1"
+sleep 2
 	then rm -rf osd2web
 	cd $PLUGINS
 	rm -rf osd2web
 	cd $LIB
 	rm -rf libvdr-osd2web.*
 	sed -i "s|-P'osd2web -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Osd2web $Remind1"
-		else echo "Vdr-Plugin-Osd2web $Remind5"; sed -i "s|-P'osd2web -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
+		else echo "Vdr-Plugin-Osd2web $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -718,14 +726,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-Skinflatplus               ***"; sleep 2
 cd $VDRSRC
 if [ -f skin-flatplus/Makefile ]
+echo "Vdr-Plugin-Skinflatplus $Remind1"
+sleep 2
 	then rm -rf skin-flatplus
 	cd $LIB
 	rm -rf libvdr-skinflatplus.*
 	rm -rf skinflatplus
 	sed -i "s|-P'skinflatplus -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Skinflatplus $Remind1"
 		else echo "Vdr-Plugin-Skinflatplus $Remind5"
-		sed -i "s|-P'skinflatplus -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -773,10 +781,11 @@ clear
 echo "        ***                Removing Skin Elchi HD              ***"; sleep 2
 cd $VDRSRC
 if [ -f skinelchihd/Makefile ]
+echo "Skin Elchi HD $Remind1"
+sleep 2
 	then rm -rf $VDRSRC/skinelchihd
 	rm -rf $LIB/libvdr-skinelchihd.*
 	sed -i "s|-P'skinelchihd -l /etc/vdr/logos/'||" /usr/local/bin/vdrrun
-	echo "Skin Elchi HD $Remind1"
 		else echo "SkinelchiHD $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -833,13 +842,14 @@ clear
 echo "        ***                Removing Text2Skin-NarrowHD              ***"; sleep 2
 cd $VDRSRC
 if [ -f text2skin/Makefile ]
+echo "Text2Skin-NarrowHD $Remind1"
+sleep 2
 	then rm -rf $VDRSRC/text2skin
 	rm -rf $VDRSRC/text2skin-narrowhd
 	rm -rf $LIB/libvdr-text2skin.*
 	rm -rf $PLUGINS/text2skin
 	rm -rf /etc/vdr/themes/NarrowHD-default.theme
 	sed -i "s|-P'text2skin'||" /usr/local/bin/vdrrun
-	echo "Text2Skin $Remind1"
 		else echo "Text2Skin-NarrowHD $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -908,10 +918,11 @@ clear
 echo "        ***                Removing Vdr-Plugin-Epgsearch               ***"; sleep 2
 cd $VDRSRC
 if [ -f epgsearch/Makefile ]
+echo "Vdr-Plugin-Epgsearch $Remind1"
+sleep 2
 	then rm -rf epgsearch
 	cd $LIB; rm -rf libvdr-epgsearch.*
 	sed -i "s|-P'epgsearch'||" /usr/local/bin/vdr
-	echo "Vdr-Plugin-Epgsearch $Remind1"
 		else echo "Vdr-Plugin-dvbapi $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -946,11 +957,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Epg2vdr               ***"; sleep 2
 cd $VDRSRC
 if [ -f epg2vdr/Makefile ]
+echo "Vdr-Plugin-Epg2vdr $Remind1 "
+sleep 2
 	then rm -rf epg2vdr
 	cd $LIB
 	rm -rf libvdr-epg2vdr.*
 	sed -i "s|-P'epg2vdr'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Epg2vdr $Remind1 "
 		else echo "Vdr-Plugin-Epg2vdr $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -988,11 +1000,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Neutrinoepg               ***"; sleep 2
 cd $VDRSRC
 if [ -f neutrinoepg/Makefile ]
+echo "Vdr-Plugin-Neutrinoepg $Remind1"
+sleep 2
 	then rm -rf neutrinoepg
 	cd $LIB
 	rm -rf libvdr-neutrinoepg.*
 	sed -i "s|-P'neutrinoepg'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Neutrinoepg $Remind1"
 		else echo "Vdr-Plugin-Neutrinoepg $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1029,10 +1042,11 @@ clear
 echo "        ***                Removing TvGuide               ***"; sleep 2
 cd $VDRSRC
 if [ -f tvguide/Makefile ]
+echo "TvGuide $Remind1"
+sleep 2
 	then rm -rf tvguide
 	cd $LIB; rm -rf libvdr-tvguide.*
 	sed -i "s|-P'tvguide'||" /usr/local/bin/vdrrun
-	echo "TvGuide $Remind1"
 		else echo "TvGuide $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1068,11 +1082,12 @@ clear
 echo "        ***                Removing TvGuideng               ***"; sleep 2
 cd $VDRSRC
 if [ -f tvguideng/Makefile ]
+echo "TvGuideng $Remind1"
+sleep 2
 	then rm -rf tvguideng
 	cd $LIB
 	rm -rf libvdr-tvguideng.*
 	sed -i "s|-P'tvguideng'||" /usr/local/bin/vdrrun
-	echo "TvGuideng $Remind1"
 		else echo "TvGuideng $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1118,13 +1133,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-Tvscraper               ***"; sleep 2
 cd $VDRSRC
 if [ -f tvscraper/Makefile ]
+echo "Vdr-Plugin-Tvscraper $Remind1"
+sleep 2
 	then rm -rf tvscraper
 	cd $PLUGINS
 	rm -rf tvscraper
 	cd $LIB
 	rm -rf libvdr-tvscraper.*
 	sed -i "s|-P'tvscraper'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Tvscraper $Remind1"
 		else echo "Vdr-Plugin-Tvscraper $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1168,6 +1184,8 @@ clear
 echo "        ***                Removing Vdr-Plugin-Live               ***"; sleep 2
 cd $VDRSRC
 if [ -f live/Makefile ]
+echo "Vdr-Plugin-Live $Remind1 "
+sleep 2
 	then rm -rf live
 	cd $PLUGINS
 	rm -rf live
@@ -1176,7 +1194,6 @@ if [ -f live/Makefile ]
 	cd $SHARE
 	rm -rf live
 	sed -i "s|-P'live'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Live $Remind1 "
 		else echo "Vdr-Plugin-Live $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1252,11 +1269,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Iptv               ***"; sleep 2
 cd $VDRSRC
 if [ -e iptv/Makefile ]
+echo "Vdr-Plugin-Iptv $Remind1"
+sleep 2
 	then rm -rf iptv
 	cd $LIB
 	rm -rf libvdr-iptv.*
 	sed -i "s|-P'iptv'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Iptv $Remind1"
 		else echo "Vdr-Plugin-Iptv $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1296,12 +1314,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Radio               ***"; sleep 2
 cd $VDRSRC
 if [ -e radio/Makefile ]
+echo "Vdr-Plugin-Radio $Remind1"
+sleep 2
 	then rm -rf radio
 	cd $LIB
 	rm -rf libvdr-radio.*
 	rm -rf $PLUGINS/radio
 	sed -i "s|-P'radio'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Radio $Remind1"
 		else echo "Vdr-Plugin-Radio $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1352,12 +1371,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Mpv               ***"; sleep 2
 cd $VDRSRC
 if [ -f mpv/Makefile ]
+echo "Vdr-Plugin-Mpv $Remind1"
+sleep 2
 	then rm -rf mpv
 	cd $LIB
 	rm -rf libvdr-mpv.*
 	sed -i "s|-P'mpv -a alsa -v gpu -h auto -b / -l ita'||" /usr/local/bin/vdrrun
 	sed -i "s|-P'mpv -a alsa -v gpu -h vaapi-copy -b /-l ita'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Mpv $Remind1"
 		else echo "Vdr-Plugin-Mpv $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1391,11 +1411,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Dvd               ***"; sleep 2
 cd $VDRSRC
 if [ -f dvd/Makefile ]
+echo "Vdr-Plugin-Dvd $Remind1"
+sleep 2
 	then rm -rf dvd
 	cd $LIB
 	rm -rf libvdr-dvd.*
 	sed -i "s|-P'dvd'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Dvd $Remind1"
 		else echo "Vdr-Plugin-Dvd $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1434,11 +1455,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Mp3               ***"; sleep 2
 cd $VDRSRC
 if [ -f mp3/Makefile ]
+echo "Vdr-Plugin-Mp3 $Remind1"
+sleep 2
 	then rm -rf mp3
 	cd $LIB
 	rm -rf libvdr-mp3.*
 	sed -i "s|-P'mp3'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Mp3 $Remind1"
 		else echo "Vdr-Plugin-Mp3 $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1473,11 +1495,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-HbbTv               ***"; sleep 2
 cd $VDRSRC
 if [ -f hbbtv/Makefile ]
+echo "Vdr-Plugin-HbbTv $Remind1"
+sleep 2
 	then rm -rf hbbtv
 	cd $LIB
 	rm -rf libvdr-hbbtv.*
 	sed -i "s|-P'hbbtv'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-HbbTv $Remind1"
  		else echo "Vdr-Plugin-HbbTv $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1515,13 +1538,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-Image               ***"; sleep 2
 cd $VDRSRC
 if [ -f image/Makefile ]
+echo "Vdr-Plugin-Image $Remind1 "
+sleep 2
 	then rm -rf image
 	cd $LIB
 	rm -rf libvdr-image.*
 	rm -rf /usr/local/bin/imageplugin.sh
 	rm -rf /usr/local/bin/magickplugin.sh
 	sed -i "s|-P'image -c /etc/vdr/plugins'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Image $Remind1 "
 		else echo "Vdr-Plugin-Image $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1585,11 +1609,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Dvbapi               ***"; sleep 2
 cd $VDRSRC
 if [ -f dvbapi/Makefile ]
+echo "Vdr-Plugin-Dvbapi $Remind1"
+sleep 2
 	then rm -rf dvbapi
 	cd $LIB
 	rm -rf libvdr-dvbapi.*
 	sed -i "s|-P'dvbapi'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Dvbapi $Remind1"
 		else echo "Vdr-Plugin-Dvbapi $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1633,11 +1658,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-ExternalPlayer               ***"; sleep 2
 cd $VDRSRC
 if [ -f externalplayer/Makefile ]
+echo "Vdr-Plugin-ExternalPlayer $Remind1"
+sleep 2
 	then rm -rf externalplayer
 	cd $LIB
 	rm -rf libvdr-externalplayer.*
 	sed -i "s|-P'externalplayer'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-ExternalPlayer $Remind1"
 		else echo "Vdr-Plugin-ExternalPlayer $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1672,12 +1698,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Systeminfo               ***"; sleep 2
 cd $VDRSRC
 if [ -f systeminfo/Makefile ]
+echo "Vdr-Plugin-Systeminfo $Remind1"
+sleep 2
 	then rm -rf systeminfo
 	rm -rf /usr/local/bin/systeminfo.sh
 	cd $LIB
 	rm -rf libvdr-systeminfo.*
 	sed -i "s|-P'systeminfo'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Systeminfo $Remind1"
 		else echo "Vdr-Plugin-Systeminfo $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1711,11 +1738,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Femon               ***"; sleep 2
 cd $VDRSRC
 if [ -f femon/Makefile ]
+echo "Vdr-Plugin-Femon $Remind1"
+sleep 2
 	then rm -rf femon
 	cd $LIB
 	rm -rf libvdr-femon.*
 	sed -i "s|-P'femon'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Femon $Remind1"
+
 		else echo "Vdr-Plugin-Femon $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1748,11 +1777,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Devstatus               ***"; sleep 2
 cd $VDRSRC
 if [ -f devstatus/Makefile ]
+echo "Vdr-Plugin-Devstatus $Remind1 "
+sleep 2
 	then rm -rf devstatus
 	cd $LIB
 	rm -rf libvdr-devstatus.*
 	sed -i "s|-P'devstatus'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Devstatus $Remind1 "
 		else echo "Vdr-Plugin-Devstatus $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1789,13 +1819,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-Osdteletext               ***"; sleep 2
 cd $VDRSRC
 if [ -f osdteletext/Makefile ]
+echo "Vdr-Plugin-Osdteletext $Remind1"
+sleep 2
 	then rm -rf osdteletext
 	rm -rf /var/cache/vdr/vtx
 	cd $LIB
 	rm -rf libvdr-osdteletext.*
 	sed -i "s|-P'osdteletext'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Osdteletext $Remind1"
-		lse echo "Vdr-Plugin-Osdteletext $Remind5"
+		else echo "Vdr-Plugin-Osdteletext $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -1829,13 +1860,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Ttxsubs               ***"; sleep 2
 cd $VDRSRC
 if [ -f ttxsubs/Makefile ]
+echo "Vdr-Plugin-Ttxsubs $Remind1"
+sleep 2
 	then rm -rf ttxsubs
 	cd $LIB
 	rm -rf libvdr-ttxsubs.*
 	sed -i "s|-P'ttxsubs'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Ttxsubs $Remind1"
 		else echo "Vdr-Plugin-Ttxsubs $Remind5"
-		sed -i "s|-P'ttxsubs'||" /usr/local/bin/vdrrun
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -1874,13 +1905,13 @@ clear
 echo "        ***                Removing Vdr-Plugin-Suspendoutput               ***"; sleep 2
 cd $VDRSRC
 if [ -f suspendoutput/Makefile ]
+echo "Vdr-Plugin-Suspendoutput $Remind1"
+sleep 2
 	then rm -rf suspendoutput
 	cd $LIB
 	rm -rf libvdr-suspendoutput.*
 	sed -i "s|-P'suspendoutput -l'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Suspendoutput $Remind1"
 		else echo "Vdr-Plugin-Suspendoutput $Remind5"
-		sed -i "s|-P'suspendoutput -l'||" /usr/local/bin/vdrrun
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -1949,11 +1980,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Channellscan               ***"; sleep 2
 cd $VDRSRC
 if [ -f channelscan/Makefile ]
+echo "Vdr-Plugin-Channellscan $Remind1 "
+sleep 2
 	then rm -rf channelscan
 	cd $LIB
 	rm -rf libvdr-channelscan.*
 	sed -i "s|-P'channelscan'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Channellscan $Remind1 "
 		else echo "Vdr-Plugin-Channellscan $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -1982,7 +2014,8 @@ clear
 echo "        ***                Removing W_scan_cpp               ***"; sleep 2
 cd $SRC
 if [ -f /usr/local/bin/w_scan_cpp ]
-	then echo "W_scan_cpp $Remind1"
+then echo "W_scan_cpp $Remind1"
+sleep 2
 	rm -rf w_scan_cpp
 	rm -rf /usr/local/bin/w_scan
 		else echo "W_scan_cpp $Remind5"
@@ -2016,11 +2049,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Wirbelscan               ***"; sleep 2
 cd $VDRSRC
 if [ -f wirbelscan/Makefile ]
+echo "Vdr-Plugin-Wirbelscan $Remind1"
+sleep 2
 	then rm -rf wirbelscan
 	cd $LIB
 	rm -rf libvdr-wirbelscan.*
 	sed -i "s|-P'wirbelscan'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Wirbelscan $Remind1"
 		else echo "Vdr-Plugin-Wirbelscan $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2054,11 +2088,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Satip               ***"; sleep 2
 cd $VDRSRC
 if [ -f satip/Makefile ]
+echo "Vdr-Plugin-Satip $Remind1"
+sleep 2
 	then rm -rf satip
 	cd $LIB
 	rm -rf libvdr-satip.*
 	sed -i "s|-P'satip'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Satip $Remind1"
 		else echo "Vdr-Plugin-Sat-Ip $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2090,11 +2125,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Chanman               ***"; sleep 2
 cd $VDRSRC
 if [ -f chanman/Makefile ]
+echo "Vdr-Plugin-Chanman $Remind1"
+sleep 2
 	then rm -rf chanman
 	cd $LIB
 	rm -rf libvdr-chanman.*
 	sed -i "s|-P'chanman'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Chanman $Remind1"
 		else echo "Vdr-Plugin-Chanman $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2126,11 +2162,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Channellists               ***"; sleep 2
 cd $VDRSRC
 if [ -f channellists/Makefile ]
+echo "Vdr-Plugin-Channellists $Remind1"
+sleep 2
 	then rm -rf channellists
 	cd $LIB
 	rm -rf libvdr-channellists.*
 	sed -i "s|-P'channellists'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Channellists $Remind1"
 		else echo "Vdr-Plugin-Channellists $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2162,6 +2199,8 @@ clear
 echo "        ***                Removing W_scan2               ***"; sleep 2
 cd $SRC
 if [ -f c$SRC/w_scan2/Makefile ]
+echo "W_scan2 $Remind1"
+sleep 2
 	then cd w_scan2
 	make clean
 	make distclean
@@ -2192,11 +2231,12 @@ clear
 echo "        ***                Removing T2scan               ***"; sleep 2
 cd $SRC
 if [ -f /$SRC/t2scan/Makefile ]
+echo "T2scan $Remind1"
+sleep 2
 	then cd t2scan
 	make clean
 	make distclean
 	rm -rf t2scan
-	echo "T2scan $Remind1"
 		else echo "T2scan $Remind5"
 fi
         echo "                    Press Enter to continue ...               "; read enterKey;;
@@ -2254,13 +2294,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-Manager               ***";  sleep 2
 cd $VDRSRC
 if [ -f vdrmanager/vdr-vdrmanager/Makefile ]
+echo "Vdr-Plugin-Manager $Remind1"
+sleep 2
   	then rm -rf vdrmanager
 	cd $LIB
 	rm -rf libvdr-vdrmanager.*
 	cd $PLUGINS
 	rm -rf plugin.vdrmanager.*
 	sed -i "s|-P'vdrmanager -p 6420 -P change'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Manager $Remind1"
 		else echo "Vdr-Plugin-Manager $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2295,11 +2336,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-CecRemote               ***"; sleep 2
 cd $VDRSRC
 if [ -f cecremote/Makefile ]
+echo "Vdr-Plugin-CecRemote $Remind1"
+sleep 2
 	then rm -rf cecremote
 	cd $LIB
 	rm -rf libvdr-cecremote.*
 	sed -i "s|-P'cecremote'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-CecRemote $Remind1"
 		else echo "Vdr-Plugin-CecRemote $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2352,11 +2394,12 @@ clear
 echo "        ***                Removing VDR-Plugin-Remote               ***"; sleep 2
 cd $VDRSRC
 if [ -f remote/Makefile ]
+echo "Vdr-Plugin-remote $Remind1"
+sleep 2
 	then rm -rf remote
 	cd $LIB
 	rm -rf libvdr-remote.*
 	sed -i "s|-P'remote'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-remote $Remind1"
 		else echo "Vdr-Plugin-Remote $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2395,11 +2438,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Menuorg               ***"; sleep 2
 cd $VDRSRC
 if [ -f menuorg/Makefile ]
+echo "Vdr-Plugin-Menuorg $Remind1"
+sleep 2
 	then rm -rf menuorg
 	cd $LIB
 	rm -rf libvdr-menuorg.*
 	sed -i "s|-P'menuorg'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Menuorg $Remind1"
 		else echo "Vdr-Plugin-Menuorg $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2472,13 +2516,14 @@ clear
 echo "        ***                Removing Vdr-Plugin-StreamDev               ***"; sleep 2
 cd $VDRSRC
 if [ -f streamdev/Makefile ]
+echo "Vdr-Plugin-StreamDev $Remind1"
+sleep 2
 	then rm -rf streamdev
 	cd $PLUGINS
 	rm -rf streamdev-server
 	cd $LIB
 	rm -rf libvdr-streamdev-*
 	sed -i "s|-P'streamdev-server'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-StreamDev $Remind1"
 		else echo "Vdr-Plugin-StreamDev $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2514,11 +2559,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Vnsiserver               ***"; sleep 2
 cd $VDRSRC
 if [ -f vnsiserver/Makefile ]
+echo "Vdr-Plugin-Vnsiserver $Remind1"
+sleep 2
 	then rm -rf vnsiserver
 	cd $LIB
 	rm -rf libvdr-vnsiserver.*
 	sed -i "s|-P'vnsiserver'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Vnsiserver $Remind1"
 		else echo "Vdr-Plugin-Vnsiserver $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2562,11 +2608,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Upnp               ***"; sleep 2
 cd $VDRSRC
 if [ -f upnp/Makefile ]
+echo "Vdr-Plugin-Upnp $Remind1"
+sleep 2
 	then rm -rf upnp
 	cd $LIB
 	rm -rf libvdr-upnp.*
 	sed -i "s|-P'upnp'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Upnp $Remind1"
 		else echo "Vdr-Plugin-Upnp $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2631,11 +2678,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Weatherforecast               ***"; sleep 2
 cd $VDRSRC
 if [ -f weatherforecast/Makefile ]
+echo "Vdr-Plugin-Weatherforecast $Remind1"
+sleep 2
 	then rm -rf weatherforecast
 	cd $LIB
 	rm -rf libvdr-weatherforecast.*
 	sed -i "s|-P'weatherforecast'||" /usr/local/bin/vdrrun
-	echo "Vdr-Plugin-Weatherforecast $Remind1"
 		else echo "Vdr-Plugin-Weatherforecast $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
@@ -2672,11 +2720,12 @@ clear
 echo "        ***                Removing Vdr-Plugin-Weatherng               ***"; sleep 2
 cd $VDRSRC
 if [ -f weatherng/Makefile ]
+echo "Vdr-Plugin-Weatherng $Remind1"
+sleep 2
   	then rm -rf weatherng
   	cd $LIB
   	rm -rf libvdr-weatherng.*
   	sed -i "s|-P'weatherng'||" /usr/local/bin/vdrrun
-  	echo "Vdr-Plugin-Weatherng $Remind1"
 		else echo "Vdr-Plugin-Weatherng $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
