@@ -2,9 +2,9 @@
 ############################## !!! IMPORTANTE !!! #######################################
 #                                                                                       #
 # Script name : plugins_installer (only for vdr = or > 2.4.x                            #
-# Version: Github Repository Master (https://github.com/fiveten59/plugins_installer)    #
+# Version: Github Repository Master (https://github.com/fiveten59/Vdr-Tools.git)        #
 #                                                                                       #
-# chmod the script                                                                      #
+# chmod the script 'plugins_installer'                                                                     #
 # then load it simply typing: sudo ./plugins_installer                                  #
 #                                                                                       #
 #########################################################################################
@@ -221,15 +221,14 @@ apt-get -y install libxcb-icccm4-dev libxcb-keysyms1-dev libxcb-ewmh-dev libasou
 apt-get -y install libglm-dev libglew-dev freeglut3-dev libc6-dev libogg0 libxext-dev
 apt-get -y install libvdpau1 libvdpau-dev libavcodec-dev libavformat-dev libswresample-dev libswscale-dev
 apt-get -y install libxcb-ewmh-dev libglu1-mesa-dev libgl1-mesa-dev
-cd /etc/vdr
-wget https://www.dropbox.com/s/f6ngr529g1obxgg/setup16_softhdcuvid.tar.gz
-tar -zxvf setup16_softhdcuvid.tar.gz
-mv -f /etc/vdr/setup16_softhdcuvid.tar.gz /home/`logname`/Vdrrepo/
 cd $VDRSRC
 if [ -f softhdcuvid/Makefile ]
 then echo "Softhdcuvid $Remind5"
+	elif [ -f softhdvaapi/Makefile ]
+	then echo "Softhdvaapi $Remind5"
 else git clone https://github.com/jojo61/vdr-plugin-softhdcuvid.git
 cp -rf /$VDRSRC/vdr-plugin-softhdcuvid /home/`logname`/Vdrrepo/
+fi
  
      			dialog --title "   ** Setup Softhdcuvid / Softhdvaapi  **   " --infobox "
    			-------------------------------------------------------------------------
@@ -250,8 +249,7 @@ cd softhdcuvid
 make && make install
 sed -i "s|-P'dvbapi'|& -P'softhdcuvid -f'|" /usr/local/bin/vdrrun
 cd $SRC/vdr
-make plugins install
-;;    		
+make plugins install;;    		
 #
 b) 
 mv -f vdr-plugin-softhdcuvid softhdvaapi
@@ -259,15 +257,17 @@ cd softhdvaapi
 rm -rf Makefile
 wget https://www.dropbox.com/s/0sc1ihx8wns0717/patch_softhdcuvid_vaapi.tar.gz
 tar -zxvf patch_softhdcuvid_vaapi.tar.gz
-cp -rf /$VDRSRC/softhdcuvid/patch_softhdcuvid_vaapi.tar.gz /home/`logname`/Vdrrepo/
+cp -rf /$VDRSRC/softhdvaapi/patch_softhdcuvid_vaapi.tar.gz /home/`logname`/Vdrrepo/
 make && make install
 sed -i "s|-P'dvbapi'|& -P'softhdvaapi -d :0.0 -f'|" /usr/local/bin/vdrrun
+cd /etc/vdr
+wget https://www.dropbox.com/s/f6ngr529g1obxgg/setup16_softhdcuvid.tar.gz
+tar -zxvf setup16_softhdcuvid.tar.gz
+mv -f /etc/vdr/setup16_softhdcuvid.tar.gz /home/`logname`/Vdrrepo/
 cd $SRC/vdr
-make plugins install
-;;
+make plugins install;;
 esac
 #
-fi
 cd /home/`logname`/Vdrrepo/; chmod -R 777 *;
         echo "            Press Enter to continue ...               "; read enterKey;;
 #                                      $$$$$$$$$$$$$$$$$$
@@ -279,15 +279,14 @@ cd $VDRSRC
 if [ -f softhdcuvid/Makefile ]
 echo "$Remind1 Softhdcuvid"
 sleep 2
-   		then rm -rf softhdcuvid
-   		then rm -rf softhdvaapi
-   		cd $LIB
-   		rm -rf libvdr-softhdcuvid.*
-   		then rm -rf libvdr-softhdvaapi.*
-   		
-   		sed -i "s|-P'softhdcuvid -f'||" /usr/local/bin/vdrrun
-   		sed -i "s|-P'softhdvaapi -d :0.0 -f'||" /usr/local/bin/vdrrun
-   			else echo "Softhdcuvid  $Remind5"
+rm -rf softhdcuvid
+rm -rf softhdvaapi
+cd $LIB
+rm -rf libvdr-softhdcuvid.*
+then rm -rf libvdr-softhdvaapi.*
+sed -i "s|-P'softhdcuvid -f'||" /usr/local/bin/vdrrun
+sed -i "s|-P'softhdvaapi -d :0.0 -f'||" /usr/local/bin/vdrrun
+	else echo "Softhdcuvid  $Remind5"
 fi
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
@@ -1343,6 +1342,12 @@ if [ -f mpv/Makefile ]
 		cd mpv
 		make install
 fi
+cd /etc/vdr
+wget https://www.dropbox.com/s/vazvay6mgcv2amv/setup_mpv.conf.tar.gz
+tar -zxvf setup_mpv.conf.tar.gz
+rm -rf setup_mpv.conf.tar.gz
+cat setup_mpv.conf >> setup.conf
+#
 cd /home/`logname`/Vdrrepo/
 chmod -R 777 *
 cd $SRC/vdr
