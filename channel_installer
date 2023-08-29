@@ -28,10 +28,10 @@ if [ -d /usr/local/src/librepfunc ]
 cd $SRC        
 if [ -f /usr/local/bin/w_scan_cpp ]
     then echo "W_scan_cpp $Remind3"; sleep 1
-        else wget https://www.gen2vdr.de/wirbel/w_scan_cpp/w_scan_cpp-20230121.tar.bz2
-        tar xjf w_scan_cpp-20230121.tar.bz2
-        rm -rf w_scan_cpp-20230121.tar.bz2
-        mv -f w_scan_cpp-20230121 w_scan_cpp
+        else wget https://www.gen2vdr.de/wirbel/w_scan_cpp/w_scan_cpp-20230604.tar.bz2
+        tar xjf w_scan_cpp-20230604.tar.bz2
+        rm -rf w_scan_cpp-20230604.tar.bz2
+        mv -f w_scan_cpp-20230604 w_scan_cpp
         cd w_scan_cpp
         make download
         make
