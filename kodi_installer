@@ -1,0 +1,120 @@
+#!/bin/bash
+################################## !!! README !!! #######################################
+#                                                                                       #
+# Script name: kodi                                                        #
+# Tested on Ubuntu 20.04 - Ubuntu 22.04                                     #
+# chmod the script                                                                      #
+# then load it simply typing: sudo ./kodi_installer                                  #
+#                                                                                       #
+#########################################################################################
+
+clear
+while :
+do
+    dialog --title "   ** Install & Setup KODI **   " --infobox "
+
+   --------------------------------------------------------------
+
+        [a]    Install Kodi
+        [b]    Remove Kodi
+
+        [z]    Exit
+
+   -------------------------------------------------------------- " 0 0
+
+echo -n "        Enter your menu choice = Install [a] ~~ Remove [b] ~~ Exit [z]:      "
+read yourch
+case $yourch in
+
+a)
+clear
+apt-get -y install software-properties-common pkg-config
+
+clear
+    dialog --title "   ** KODI **   " --infobox "
+   ----------------------------------------------
+                KODI versions
+   ----------------------------------------------
+        [a]    Kodi Stable version (latest version)
+        [b]    Kodi Old version (no Ubuntu 22.04)
+        
+        [z]    Skip        
+
+   ---------------------------------------------- " 0 0
+    echo -n "        Enter your menu choice  [a-z]:      "
+    read yourch
+    case $yourch in
+
+a)   clear; add-apt-repository ppa:team-xbmc/ppa; apt-get update; apt-get -y install kodi; apt install kodi-pvr-iptvsimple;;
+b)   clear; add-apt-repository ppa:team-xbmc/kodi-old; apt-get -y install kodi; apt-get -y install kodi-pvr-iptvsimple; apt-mark hold kodi;;
+esac
+#
+echo "                    *** Install Kill Kodi Icon ***"
+sleep 2
+cd /usr/local/bin
+rm -rf /usr/local/bin/Killkodi.sh
+touch /usr/local/bin/Killkodi.sh
+echo '#!/bin/sh
+
+killall -9 /usr/lib/x86_64-linux-gnu/kodi/kodi.bin & killall -9 vdr
+# & killall -9 oscam & shutdown -h now '  >> /usr/local/bin/Killkodi.sh # = a powervdoff
+chmod 777 /usr/local/bin/Killkodi.sh
+#
+echo "                    *** Setup Kill Kodi icon  ***"
+sleep 1
+rm -rf /home/`logname`/Scrivania/Killkodi.desktop
+rm -rf /usr/share/applications/Killkodi.desktop
+touch /usr/share/applications/Killkodi.desktop
+echo "[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=KillKodi
+Description=Kill Kodi
+Icon=/usr/local/src/icone/killkodi.png
+Exec=/usr/local/bin/Killkodi.sh
+" >> /usr/share/applications/Killkodi.desktop
+chmod 777 /usr/share/applications/Killkodi.desktop
+#
+echo "                    *** Install Kodi Picon ***"
+sleep 2
+cd /usr/local/etc
+wget https://www.dropbox.com/s/ptro2ixr3k1cje2/kodi_picon.tar.gz
+tar -zxvf kodi_picon.tar.gz
+mv -f kodi_picon.tar.gz /home/`logname`/Vdrrepo/
+cd /usr/share/kodi/system
+wget https://www.dropbox.com/s/x1stux8iqzek5dh/Lircmap_Kodi.tar.gz
+tar -zxvf Lircmap_Kodi.tar.gz
+mv -f Lircmap_Kodi.tar.gz /home/`logname`/Vdrrepo/
+cd /home/`logname`/Vdrrepo/
+chmod -R 777 *
+
+echo "                    Press Enter to continue ...               "
+read enterKey;;
+
+#############################################################
+
+b)
+
+clear
+echo "                    Remove KODI"
+sleep 2
+apt-get remove kodi*
+apt-get purge kodi*
+rm -rf ~/.kodi/
+rm -rf /home/`logname`/.kodi/*
+rm -rf /usr/share/kodi
+add-apt-repository --remove ppa:team-xbmc/ppa -y
+add-apt-repository --remove ppa:team-xbmc/kodi-old -y
+rm -rf /home/`logname`/Scrivania/Kodi.desktop
+rm -rf /usr/share/applications/Kodi.desktop;;
+#
+z)
+clear
+exit 0
+;;
+*) ;;
+esac
+done
+
+esac
